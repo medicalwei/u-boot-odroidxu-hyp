@@ -32,7 +32,7 @@ COBJS	+= cache_v7.o
 COBJS	+= cpu.o
 COBJS	+= syslib.o
 
-ifneq ($(CONFIG_ARMV7_NONSEC),)
+ifneq ($(CONFIG_ARMV7_NONSEC)$(CONFIG_ARMV7_VIRT),)
 SOBJS   += nonsec_virt.o
 COBJS	+= virt-v7.o
 endif
