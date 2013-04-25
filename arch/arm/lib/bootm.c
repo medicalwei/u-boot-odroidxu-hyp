@@ -35,6 +35,10 @@
 #include <fdt_support.h>
 #include <asm/bootm.h>
 
+#ifdef CONFIG_ARMV7_NONSEC
+#include <asm/armv7.h>
+#endif
+
 DECLARE_GLOBAL_DATA_PTR;
 
 #if defined(CONFIG_SETUP_MEMORY_TAGS) || \
@@ -44,6 +48,8 @@ DECLARE_GLOBAL_DATA_PTR;
 	defined(CONFIG_REVISION_TAG)
 static struct tag *params;
 #endif
+
+static void do_nonsec_virt_switch(void);
 
 static ulong get_sp(void)
 {
@@ -351,6 +357,9 @@ static void boot_jump_linux(bootm_headers_t *images)
  */
 int do_bootm_linux(int flag, int argc, char *argv[], bootm_headers_t *images)
 {
+
+	do_nonsec_virt_switch();
+
 	/* No need for those on ARM */
 	if (flag & BOOTM_STATE_OS_BD_T || flag & BOOTM_STATE_OS_CMDLINE)
 		return -1;
@@ -399,3 +408,27 @@ int bootz_setup(void *image, void **start, void **end)
 	return 0;
 }
 #endif	/* CONFIG_CMD_BOOTZ */
+
+static void do_nonsec_virt_switch(void)
+{
+#ifdef CONFIG_ARMV7_NONSEC
+	int ret;
+
+	ret = armv7_switch_nonsec();
+	switch (ret) {
+	case NONSEC_VIRT_SUCCESS:
+		debug("entered non-secure state\n");
+		break;
+	case NONSEC_ERR_NO_SEC_EXT:
+		printf("nonsec: Security extensions not implemented.\n");
+		break;
+	case NONSEC_ERR_NO_GIC_ADDRESS:
+		printf("nonsec: could not determine GIC address.\n");
+		break;
+	case NONSEC_ERR_GIC_ADDRESS_ABOVE_4GB:
+		printf("nonsec: PERIPHBASE is above 4 GB, no access.\n");
+		break;
+	}
+#endif
+}
+
