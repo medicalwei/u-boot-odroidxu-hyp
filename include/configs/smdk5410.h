@@ -130,6 +130,8 @@
 
 /* input clock of PLL: SMDK5410 has 24MHz input clock */
 #define CONFIG_SYS_CLK_FREQ		24000000
+#define CONFIG_SYSFLAGS_ADDR		0x02020000
+#define CONFIG_ARM_GIC_BASE_ADDRESS	0x10480000
 
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_CMDLINE_TAG
@@ -214,6 +216,7 @@
 #ifndef CONFIG_CPU_EXYNOS5410_EVT0
     #define CONFIG_SECURE_TZSW_ONLY
 #endif
+
 /*
 #define CONFIG_SECURE_BOOT
 */
@@ -513,5 +516,11 @@
 
 /* Enable devicetree support */
 #define CONFIG_OF_LIBFDT
+
+/* Enable virt mode commands */
+#define CONFIG_ARMV7_VIRT
+
+/* Disable d-cache */
+#define CONFIG_SYS_DCACHE_OFF
 
 #endif	/* __CONFIG_H */
