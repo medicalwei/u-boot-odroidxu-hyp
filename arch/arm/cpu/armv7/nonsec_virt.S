@@ -27,8 +27,10 @@
 #include <asm/gic.h>
 #include <asm/armv7.h>
 
+/*
 .arch_extension sec
 .arch_extension virt
+*/
 
 /* the vector table for secure state and HYP mode */
 _monitor_vectors:
@@ -71,7 +73,7 @@ _secure_monitor:
 	movs	pc, lr				@ return to non-secure SVC
 
 _hyp_trap:
-	mrs	lr, elr_hyp	@ for older asm: .byte 0x00, 0xe3, 0x0e, 0xe1
+	.word 0xe10ee300			@ mrs	lr, elr_hyp
 	mov pc, lr				@ do no switch modes, but
 						@ return to caller
 
@@ -191,7 +193,7 @@ ENTRY(_switch_to_hyp)
 	mov	r0, lr
 	mov	r1, sp				@ save SVC copy of LR and SP
 	isb
-	hvc #0			 @ for older asm: .byte 0x70, 0x00, 0x40, 0xe1
+	.word	0xe1400070			@ hvc #0
 	mov	sp, r1
 	mov	lr, r0				@ restore SVC copy of LR and SP
 
