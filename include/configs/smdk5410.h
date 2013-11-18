@@ -217,9 +217,7 @@
     #define CONFIG_SECURE_TZSW_ONLY
 #endif
 
-/*
 #define CONFIG_SECURE_BOOT
-*/
 
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_ELF
